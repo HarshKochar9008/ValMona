@@ -6,28 +6,34 @@ import MonadWalletConnect from '../components/MonadWalletConnect';
 
 const LandingPage = () => {
   const [showWalletConnect, setShowWalletConnect] = useState(false);
+  const [currentCharacterIndex, setCurrentCharacterIndex] = useState(0);
   const navigate = useNavigate();
 
   const characters = [
     {
       name: 'JETT',
-      description: 'Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit, Sed Ex Ea Commodo Consequat.',
-      color: 'from-blue-400 to-blue-600',
-      abilities: ['dash', 'updraft', 'tailwind']
+      image: 'https://i.ibb.co/FNVMc0r/jett.png'
     },
     {
-      name: 'SOVA',
-      description: 'Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit, Sed Ex Ea Commodo Consequat.',
-      color: 'from-green-400 to-green-600',
-      abilities: ['shock', 'recon', 'hunter']
+      name: 'OMEN',
+      image: 'https://i.ibb.co/39p2JCT8/omen.png'
     },
     {
-      name: 'SAGE',
-      description: 'Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit, Sed Ex Ea Commodo Consequat.',
-      color: 'from-purple-400 to-purple-600',
-      abilities: ['heal', 'barrier', 'resurrection']
+      name: 'RAZE',
+      image: 'https://i.ibb.co/XxXcV0yQ/raze.png'
     }
   ];
+
+  // Rotate characters every 3 seconds
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentCharacterIndex((prevIndex) => 
+        prevIndex === characters.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [characters.length]);
 
   return (
     <div className="min-h-screen landing-gradient relative overflow-hidden">
@@ -128,54 +134,33 @@ const LandingPage = () => {
               </div>
             </motion.div>
 
-            {/* Right Side - Character Cards */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="space-y-6"
-            >
-              {characters.map((character, index) => (
-                <motion.div
-                  key={character.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.8 + index * 0.2 }}
-                  className="relative"
-                >
-                  {/* Character Card */}
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 relative overflow-hidden">
-                                         {/* Character Image */}
-                     <div className="absolute -top-20 -right-4 w-32 h-40">
-                       <div className={`w-full h-full bg-gradient-to-b ${character.color} rounded-lg transform rotate-12 shadow-lg character-glow`}></div>
-                     </div>
-                    
-                    {/* Card Content */}
-                    <div className="relative z-10">
-                      <h3 className="text-2xl font-bold text-white mb-3">{character.name}</h3>
-                      <p className="text-gray-300 text-sm mb-4 leading-relaxed">
-                        {character.description}
-                      </p>
-                      
-                      {/* Ability Icons */}
-                      <div className="flex space-x-3 mb-4">
-                        {character.abilities.map((ability, idx) => (
-                          <div key={idx} className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
-                            <div className="w-3 h-3 bg-teal-400 rounded-full"></div>
-                          </div>
-                        ))}
-                      </div>
-                      
-                      {/* Full View Button */}
-                      <button className="flex items-center text-white hover:text-teal-400 transition-colors duration-300">
-                        <span className="font-medium">FULL VIEW</span>
-                        <ArrowRight className="ml-2 w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+                         {/* Right Side - Rotating Character Display */}
+             <motion.div
+               initial={{ opacity: 0, x: 50 }}
+               animate={{ opacity: 1, x: 0 }}
+               transition={{ duration: 0.8, delay: 0.6 }}
+               className="relative h-64 flex items-center justify-center"
+             >
+               <motion.div
+                 key={characters[currentCharacterIndex].name}
+                 initial={{ opacity: 0, scale: 0.8 }}
+                 animate={{ opacity: 1, scale: 1 }}
+                 exit={{ opacity: 0, scale: 0.8 }}
+                 transition={{ duration: 0.5 }}
+                 className="relative"
+               >
+                 <img 
+                   src={characters[currentCharacterIndex].image} 
+                   alt={characters[currentCharacterIndex].name}
+                   className="w-90 h-120 object-cover"
+                 />
+                 <div className="absolute bottom-2 left-2  px-3 py-1 rounded">
+                   <h3 className="text-lg font-bold text-white">
+                     {characters[currentCharacterIndex].name}
+                   </h3>
+                 </div>
+               </motion.div>
+             </motion.div>
           </div>
         </div>
       </main>
