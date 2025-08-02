@@ -77,14 +77,14 @@ const LandingPage = () => {
             className="text-center mb-8"
           >
             <h1 className="text-8xl md:text-9xl font-bold text-white opacity-30 tracking-wider mb-4">
-              VALORANT
+              VALOMONA
             </h1>
             <div className="flex items-center justify-center space-x-4 text-2xl md:text-3xl font-bold text-white">
               <span>STATS</span>
               <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-              <span>INFO</span>
+              <span>PREDICT</span>
               <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-              <span>INSIGHTS</span>
+              <span>EARN</span>
             </div>
           </motion.div>
 
@@ -116,31 +116,28 @@ const LandingPage = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="relative"
             >
-              <div className="relative bg-gray-800 rounded-lg overflow-hidden shadow-2xl">
-                {/* Video Thumbnail */}
-                                 <div className="relative h-80 bg-gradient-to-br from-gray-700 to-gray-900">
-                   <div className="absolute inset-0 video-overlay"></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                      <Play className="w-8 h-8 text-white ml-1" />
-                    </div>
-                  </div>
+              <div className="relative bottom-10 bg-gray-800 rounded-lg overflow-hidden shadow-2xl">
+                {/* YouTube Video Embed */}
+                <div className="relative h-80">
+                  <iframe
+                    className="w-full h-full"
+                    src="https://www.youtube.com/embed/nKnIb04qUWY?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1"
+                    title="Valorant Live Stream"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
                   
-                  {/* Game UI Elements */}
-                  <div className="absolute bottom-4 left-4 flex items-center space-x-4 text-white">
-                    <span className="text-2xl font-bold">100</span>
-                    <Eye className="w-6 h-6" />
-                    <Shield className="w-6 h-6" />
-                    <Sword className="w-6 h-6" />
-                    <span className="text-lg font-semibold">5+</span>
+                  {/* Overlay with game stats */}
+                  <div className="absolute top-4 left-4 flex items-center space-x-4 text-white bg-black bg-opacity-50 px-3 py-2 rounded">
+                    <span className="text-lg font-bold">LIVE</span>
+                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                    <Eye className="w-5 h-5" />
+                    <span className="text-sm">2.5K</span>
                   </div>
                   
                   {/* Xtrfy Brand */}
-                  <div className="absolute bottom-4 right-4">
-                    <div className="bg-blue-600 px-3 py-1 rounded text-white text-sm font-medium">
-                      Use Code TARBY
-                    </div>
-                  </div>
+
                 </div>
               </div>
             </motion.div>
