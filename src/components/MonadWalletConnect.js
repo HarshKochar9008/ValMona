@@ -29,7 +29,8 @@ const MonadWalletConnect = ({ isOpen, onClose, onSuccess }) => {
     connectMetaMask,
     connectPhantom,
     disconnectWallet,
-    getAvailableWallets
+    getAvailableWallets,
+    getAddressName
   } = useWallet();
 
   const availableWallets = getAvailableWallets();
@@ -44,6 +45,12 @@ const MonadWalletConnect = ({ isOpen, onClose, onSuccess }) => {
         await connectMetaMask();
       } else if (walletType === 'phantom') {
         await connectPhantom();
+      }
+
+      // Check if this address already has a saved nickname
+      const existingName = getAddressName(account);
+      if (existingName) {
+        setAddressName(existingName);
       }
 
       // Show address name input after successful connection
@@ -232,7 +239,10 @@ const MonadWalletConnect = ({ isOpen, onClose, onSuccess }) => {
                     maxLength={50}
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    This name will help you identify this address in the future
+                    {getAddressName(account) ? 
+                      "This address already has a saved nickname. You can update it above." : 
+                      "This name will help you identify this address in the future"
+                    }
                   </p>
                 </div>
 

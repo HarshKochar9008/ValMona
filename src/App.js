@@ -8,9 +8,11 @@ import Matches from './pages/Matches';
 import MatchDetail from './pages/MatchDetail';
 import Betting from './pages/Betting';
 import Profile from './pages/Profile';
+import About from './pages/About';
+import BannerDemo from './pages/BannerDemo';
 import { WalletProvider } from './context/WalletContext';
 import { BettingProvider } from './context/BettingContext';
-import './utils/walletDemo'; // Import demo utilities for testing
+import './utils/walletDemo'; 
 
 function App() {
   return (
@@ -84,6 +86,20 @@ function App() {
                 </motion.div>
               </div>
             } />
+            <Route path="/about" element={
+              <div className="min-h-screen bg-gradient-to-br from-valorant-blue via-gray-900 to-valorant-dark">
+                <Navbar />
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="container mx-auto px-4 py-8"
+                >
+                  <About />
+                </motion.div>
+              </div>
+            } />
+            <Route path="/banner-demo" element={<BannerDemo />} />
           </Routes>
         </Router>
       </BettingProvider>
