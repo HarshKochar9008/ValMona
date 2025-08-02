@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import valorantApi from '../services/valorantApi';
 import { useBetting } from '../context/BettingContext';
+import { createClient } from '@supabase/supabase-js';
+import { useWallet } from '../context/WalletContext';
 
 const MatchDetail = () => {
   const { id } = useParams();
@@ -29,6 +31,13 @@ const MatchDetail = () => {
   const [betAmount, setBetAmount] = useState('');
   const [selectedTeam, setSelectedTeam] = useState(null);
   const { isConnected, placeBet, loading: bettingLoading } = useBetting();
+  const { account } = useWallet();
+  const prevScoreRef = useRef(null);
+
+  // Initialize Supabase client (replace with your actual values)
+  const SUPABASE_URL = 'https://btbynecypidtqjwxwhiv.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0YnluZWN5cGlkdHFqd3h3aGl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3MzY2NzcsImV4cCI6MjA2MTMxMjY3N30.YyNUJn7rwncbeWx3dDtdloQJptNLNulv7KMPdihRAlI';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   useEffect(() => {
     let intervalId;
@@ -37,7 +46,92 @@ const MatchDetail = () => {
       try {
         const response = await fetch('http://localhost:3001/api/score');
         const data = await response.json();
-        console.log(data);
+
+        // Compare scores if we have a previous score
+        if (prevScoreRef.current) {
+          const prevScores = prevScoreRef.current;
+          const newScores = {
+            team1: data.teams[0].score,
+            team2: data.teams[1].score,
+          };
+
+          if (
+            prevScores.team1 !== newScores.team1 ||
+            prevScores.team2 !== newScores.team2
+          ) {
+            // Score changed, fetch bets from Supabase
+            const { data: bets, error } = await supabase
+              .from('bets')
+              .select('*')
+              .eq('match_id', id);
+
+            if (error) {
+              console.error('Error fetching bets:', error.message);
+            } else {
+              const total = bets[0].bet_amount+bets[1].bet_amount;
+              bets.forEach(async (bet) => {
+                let prev = prevScores[bet.selected_team];
+                let curr = newScores[bet.selected_team];
+                let change = curr - prev;
+                let changeStr =
+                  change > 0
+                    ? 'increased'
+                    : change < 0
+                    ? 'decreased'
+                    : 'no change';
+                if(changeStr === 'no change' && bets[0].address===bet.address){
+                  const request = await fetch('https://api.brewit.money/automation/agents/monad', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                      name: 'Monad Agent Job ',
+                      times: 1,
+                      task: 'send',
+                      repeat: 1,
+                      payload: {
+                        token: '0x47D891407DBB24bd550d13337032E79dDdC98894',
+                        toAddress: '0x920c26536DDD131C168E0eb5c289a2AFF5DF7Fdb',
+                        validatorSalt: '0xfde4ab11267a43a9455629e5a0e180f603152ac9ebb165769f7b79ca6c0e9358', // loser
+                        amount: (total).toString(),
+                        accountAddress: '0xC72D888545e6d8f8961a378F77733550fc3F98F1' // loser
+                      },
+                      enabled: true
+                    })
+                  });
+                  console.log("Payment DOne");
+                }else if(changeStr === 'no change' && bets[1].address===bet.address){
+                  const request = await fetch('https://api.brewit.money/automation/agents/monad', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                      name: 'Monad Agent Job ',
+                      times: 1,
+                      task: 'send',
+                      repeat: 1,
+                      payload: {
+                        token: '0x47D891407DBB24bd550d13337032E79dDdC98894',
+                        toAddress: '0xC72D888545e6d8f8961a378F77733550fc3F98F1',
+                        validatorSalt: '0xf87770045a5d9979fda34c1a32275b6e07875ddea819759890108f45c253cdc9', // loser
+                        amount: (total).toString(),
+                        accountAddress: '0x920c26536DDD131C168E0eb5c289a2AFF5DF7Fdb' // loser
+                      },
+                      enabled: true
+                    })
+                  });
+                  console.log("Payment Done");
+                }
+                console.log(
+                  `Address: ${bet.address}, Bet Amount: ${bet.bet_amount}, Team: ${bet.selected_team}, Score ${changeStr}`
+                );
+              });
+            }
+          }
+        }
+
+        // Update previous score reference
+        prevScoreRef.current = {
+          team1: data.teams[0].score,
+          team2: data.teams[1].score,
+        };
+
         setMatchData(data);
         const [matchData, statsData] = await Promise.all([
           valorantApi.getMatch(id),
@@ -124,6 +218,26 @@ const MatchDetail = () => {
       setBetAmount('');
       setSelectedTeam(null);
       alert('Bet placed successfully!');
+      // Store bet details in Supabase
+      let betAddress = account;
+      if (account === 'CFcsDUvEYeFeWu9KprEU9n9MMdezgZm2LoJ2s4UtZ1oP') {
+        betAddress = '0x920c26536DDD131C168E0eb5c289a2AFF5DF7Fdb';
+      } else if (account === 'HYLQGcwKJ3EUE7sLvFCKgU7UKaNCNT6qwpx16aDUheGv') {
+        betAddress = '0xC72D888545e6d8f8961a378F77733550fc3F98F1';
+      }
+      const betDetails = {
+        match_id: match.id,
+        match_name: matchData.teams[0].name + " vs " + matchData.teams[1].name,
+        selected_team: selectedTeam,
+        bet_amount: betAmount,
+        address: betAddress,
+        timestamp: new Date().toISOString(),
+      };
+      const { error } = await supabase.from('bets').insert([betDetails]);
+      if (error) {
+        console.error('Error storing bet in Supabase:', error.message);
+        alert('Bet placed, but failed to store in Supabase: ' + error.message);
+      }
     } catch (error) {
       alert('Error placing bet: ' + error.message);
     }
