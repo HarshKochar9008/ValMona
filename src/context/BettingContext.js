@@ -239,6 +239,10 @@ export const BettingProvider = ({ children }) => {
 
   const value = {
     ...state,
+    isConnected, // added from useWallet
+    account,     // added from useWallet
+    signer,      // added from useWallet
+    walletType,  // added from useWallet
     createBet,
     placeBet,
     resolveBet
