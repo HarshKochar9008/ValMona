@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Play, ArrowRight, Eye, Shield, Sword } from 'lucide-react';
+import { Play, ArrowRight, Eye, Shield, Sword, Users } from 'lucide-react';
 import MonadWalletConnect from '../components/MonadWalletConnect';
+import SavedAddresses from '../components/SavedAddresses';
 
 const LandingPage = () => {
   const [showWalletConnect, setShowWalletConnect] = useState(false);
+  const [showSavedAddresses, setShowSavedAddresses] = useState(false);
   const [currentCharacterIndex, setCurrentCharacterIndex] = useState(0);
   const navigate = useNavigate();
 
@@ -50,12 +52,21 @@ const LandingPage = () => {
         <div className="container mx-auto px-6">
           {/* Login Button */}
           <div className="text-center mb-8">
-            <button 
-              onClick={() => setShowWalletConnect(true)}
-              className="inline-block text-white hover:text-teal-400 transition-colors duration-300 font-medium tracking-wider"
-            >
-              LOGIN
-            </button>
+            <div className="flex items-center justify-center space-x-6">
+              <button 
+                onClick={() => setShowWalletConnect(true)}
+                className="inline-block text-white hover:text-teal-400 transition-colors duration-300 font-medium tracking-wider"
+              >
+                LOGIN
+              </button>
+              <button 
+                onClick={() => setShowSavedAddresses(true)}
+                className="inline-block text-white hover:text-teal-400 transition-colors duration-300 font-medium tracking-wider flex items-center space-x-2"
+              >
+                <Users className="w-4 h-4" />
+                <span>SAVED ADDRESSES</span>
+              </button>
+            </div>
           </div>
 
           {/* Main Title */}
@@ -177,6 +188,12 @@ const LandingPage = () => {
           // Navigate to home page after successful connection
           navigate('/home');
         }}
+      />
+
+      {/* Saved Addresses Modal */}
+      <SavedAddresses
+        isOpen={showSavedAddresses}
+        onClose={() => setShowSavedAddresses(false)}
       />
     </div>
   );
