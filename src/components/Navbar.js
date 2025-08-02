@@ -21,7 +21,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const location = useLocation();
-  const { account, balance, isConnected, walletType, networkName } = useWallet();
+  const { account, balance, isConnected, walletType } = useWallet();
   const { mUSDCBalance } = useBetting();
 
   const navItems = [
@@ -37,10 +37,7 @@ const Navbar = () => {
     setIsWalletModalOpen(true);
   };
 
-  const formatAddress = (address) => {
-    if (!address) return '';
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
+
 
   return (
     <nav className="bg-gradient-to-r from-valorant-blue to-gray-900 border-b border-gray-700 sticky top-0 z-50">

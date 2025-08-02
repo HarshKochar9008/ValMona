@@ -8,9 +8,7 @@ import {
   CheckCircle, 
   Loader2,
   Shield,
-  Zap,
-  User,
-  Edit3
+  User
 } from 'lucide-react';
 import { useWallet } from '../context/WalletContext';
 
@@ -26,10 +24,8 @@ const MonadWalletConnect = ({ isOpen, onClose, onSuccess }) => {
     account,
     walletType,
     isConnected,
-    isConnecting: walletConnecting,
     error: walletError,
     networkName,
-    balance,
     connectMetaMask,
     connectPhantom,
     disconnectWallet,

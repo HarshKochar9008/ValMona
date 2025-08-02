@@ -10,6 +10,7 @@ import Betting from './pages/Betting';
 import Profile from './pages/Profile';
 import { WalletProvider } from './context/WalletContext';
 import { BettingProvider } from './context/BettingContext';
+import './utils/walletDemo'; // Import demo utilities for testing
 
 function App() {
   return (

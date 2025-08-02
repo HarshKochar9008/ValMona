@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Play, ArrowRight, Eye, Shield, Sword } from 'lucide-react';
 import MonadWalletConnect from '../components/MonadWalletConnect';
 
