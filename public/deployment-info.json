@@ -1,0 +1,8 @@
+{
+  "mockUSDC": "0x0000000000000000000000000000000000000000",
+  "sidebetFactory": "0x0000000000000000000000000000000000000000",
+  "network": "monad-testnet",
+  "chainId": 1337,
+  "rpcUrl": "https://rpc.testnet.monad.xyz",
+  "explorer": "https://explorer.testnet.monad.xyz"
+} 
